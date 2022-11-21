@@ -6,12 +6,17 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/probability_theory/</loc>
+         <loc>https://example.com/score_based_model/</loc>
          <lastmod>2022-11-21</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/score_based_model/</loc>
+         <loc>https://example.com/math/differential_equation/</loc>
+         <lastmod>2022-11-21</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://example.com/math/probability_theory/</loc>
          <lastmod>2022-11-21</lastmod>
          <changefreq>daily</changefreq>
     </url>
