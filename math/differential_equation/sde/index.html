@@ -6,16 +6,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="https://example.com/math/">
-        <link rel="shortcut icon" href="../img/favicon.ico">
-        <title>Probability Theory - ArthurLogan</title>
-        <link href="../css/bootstrap.min.css" rel="stylesheet">
-        <link href="../css/font-awesome.min.css" rel="stylesheet">
-        <link href="../css/base.css" rel="stylesheet">
+        <link rel="canonical" href="https://example.com/math/differential_equation/sde/">
+        <link rel="shortcut icon" href="../../../img/favicon.ico">
+        <title>Modelling SDE - ArthurLogan</title>
+        <link href="../../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../../css/base.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css">
 
-        <script src="../js/jquery-1.10.2.min.js" defer></script>
-        <script src="../js/bootstrap.min.js" defer></script>
+        <script src="../../../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../../../js/bootstrap.min.js" defer></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
         <script>hljs.initHighlightingOnLoad();</script> 
     </head>
@@ -23,7 +23,7 @@
     <body>
         <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
             <div class="container">
-                <a class="navbar-brand" href="..">ArthurLogan</a>
+                <a class="navbar-brand" href="../../..">ArthurLogan</a>
                 <!-- Expander button -->
                 <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
@@ -34,23 +34,23 @@
                         <!-- Main navigation -->
                         <ul class="nav navbar-nav">
                             <li class="navitem">
-                                <a href=".." class="nav-link">Home</a>
+                                <a href="../../.." class="nav-link">Home</a>
                             </li>
                             <li class="dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Math <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="probability_theory/" class="dropdown-item">Probability</a>
+    <a href="../../probability_theory/" class="dropdown-item">Probability</a>
 </li>
                                     
 <li>
-    <a href="differential_equation/" class="dropdown-item">Differential Equation</a>
+    <a href="../" class="dropdown-item">Differential Equation</a>
 </li>
                                 </ul>
                             </li>
                             <li class="navitem">
-                                <a href="../score_based_model/" class="nav-link">Scores</a>
+                                <a href="../../../score_based_model/" class="nav-link">Scores</a>
                             </li>
                         </ul>
 
@@ -78,16 +78,8 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-level="1"><a href="#probability-theory" class="nav-link">Probability Theory</a>
+            <li class="nav-item" data-level="1"><a href="#modelling-sde" class="nav-link">Modelling SDE</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#density-estimation" class="nav-link">Density Estimation</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#sampling-method" class="nav-link">Sampling Method</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
               </ul>
             </li>
         </ul>
@@ -95,18 +87,53 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="probability-theory">Probability Theory</h1>
-<p>近期在阅读Diffusion Model理论的过程中，遇到了不少数学上的问题，主要包括以下几点：</p>
+<h1 id="modelling-sde">Modelling SDE</h1>
+<p>从ODE到SDE的过渡是理所当然的。不妨考虑病毒感染的过程，尽管平均意义上计算出感染率 <script type="math/tex">\alpha</script>，但实际过程中感染率并不恒等于 <script type="math/tex">\alpha</script>，而是在其附近波动，由于各种无法预估的生理条件。因此会遇到我们并没有足够信息去确定的动态过程。在病毒增长模型中，可以构建随机模型：
+<script type="math/tex; mode=display">
+\frac{dX}{ds}=(\alpha+\text{"error"})X(s), X(0)=x_0
+</script>
+可以明确的是，“error”在同一时刻对于所有情况的均值是0，从而保证整体增长率仍然是 <script type="math/tex">\alpha</script>，如果“error”的方差也趋于零，则SDE会退化成ODE。对比SDE和退化的ODE，SDE的图像在ODE图像上下波动，波动幅度取决于“error”的方差。以下为了明确“error”本身是随机变量，则会以 <script type="math/tex">X(\omega, t)</script> 的形式表示，涉及的相关性质如范围等则等价于：
+<script type="math/tex; mode=display">
+P[X(t)\in(0,1)]=P[\{\omega: X(\omega, t)\in(0,1)\}]
+</script>
+</p>
+<h3 id="1-stochastic-differential-equation">1 Stochastic Differential Equation</h3>
+<p>我们首先给出随机微分方程的积分形式，再解释推导过程。
+<script type="math/tex; mode=display">
+X(t)=x_0+\int_0^tf(X(s))ds+\sigma B(t), t\ge 0\tag{3.1}
+</script>
+右侧的前两项和ODE的结果相同，第三项我们希望能捕捉波动的部分。在任意时刻，<script type="math/tex">B(t)</script> 是随机变量，从而引入 <script type="math/tex">X(t)</script> 路径的多样性和随机性，从而 <script type="math/tex">B(t), X(t)</script> 都是随机过程，从而表示成随机过程的形式：
+<script type="math/tex; mode=display">
+X(\omega,t)=x_0+\int_0^tf(X(\omega,s))ds+\sigma B(\omega,t)
+</script>
+则问题可以转化为对随机过程 <script type="math/tex">B(\omega, t)</script> 性质研究。</p>
 <ul>
-<li>Density Estimation</li>
-<li>Sampling Method</li>
-<li><a href="differential_equation/">Differential_Equation</a></li>
+<li>
+<p><strong>Initial Point</strong>：在零时刻，必然处在初始位置。<script type="math/tex">B(\omega, 0)=0</script>。</p>
+</li>
+<li>
+<p><strong>Zero Expectation</strong>：任意时刻的路径仍以 <script type="math/tex">f(X(\omega, t))</script> 为中心，则有 <script type="math/tex">E[B(t+h)-B(t)]=0</script>。</p>
+</li>
 </ul>
-<p>因此借此机会恶补了不少数学知识，并在此做出整理。</p>
-<h2 id="density-estimation">Density Estimation</h2>
-<p>（略）</p>
-<h2 id="sampling-method">Sampling Method</h2>
-<p>（略）</p></div>
+<p>
+<script type="math/tex; mode=display">
+X(\omega,t+h)-X(\omega,t)=\int_t^{t+h}f(X(\omega,s))ds+\sigma\left(B(\omega,t+h)-B(\omega,t)\right)
+</script>
+</p>
+<ul>
+<li>
+<p><strong>Independent</strong>：在不同时刻的震动是独立的，即对于不同时刻 <script type="math/tex">s_1<s_2<t_1<t_2</script>，<script type="math/tex">B(s_2)-B(s_1)</script> 和 <script type="math/tex">B(t_2)-B(t_1)</script> 是独立的。</p>
+</li>
+<li>
+<p><strong>Identical</strong>：在不同时刻的震动是同分布的，即 <script type="math/tex">B(t+h)-B(t)</script> 只和 <script type="math/tex">h</script> 有关。</p>
+</li>
+</ul>
+<p>后两条性质其实说明路径 <script type="math/tex">X</script> 的波动是时间平稳的纯净噪声、不包含任何可预测的结构。得出一条很重要的性质：随机过程 <script type="math/tex">B(\omega, t)</script> 关于时间不是可微的，任何时刻前后的波动值无关、且可以相差很远，但这个过程可以关于时间连续的，基于连续的条件下，该随机过程存在且唯一，是布朗运动。</p>
+<p>对于随机微分方程解的存在性条件仍然值得研究，但在上述的严约束下，我们知道不存在所有采样路径均关于时间可微解，只能采样路径均关于时间连续的解，对应的噪声为布朗运动，同样可以写成微分形式，由于路径和布朗运动均不可微，因此实际表示积分过程的微小变化。
+<script type="math/tex; mode=display">
+dX(\omega, s)=f(X(\omega,s))ds+\sigma dB(\omega, s), X(\omega,0)=x_0
+</script>
+</p></div>
             </div>
         </div>
 
@@ -115,12 +142,12 @@
             <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
         </footer>
         <script>
-            var base_url = "..",
+            var base_url = "../../..",
                 shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
         </script>
-        <script src="../js/base.js" defer></script>
+        <script src="../../../js/base.js" defer></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" defer></script>
-        <script src="../search/main.js" defer></script>
+        <script src="../../../search/main.js" defer></script>
 
         <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">

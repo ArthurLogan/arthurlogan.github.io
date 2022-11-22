@@ -11,7 +11,7 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/math/</loc>
+         <loc>https://example.com/math/probability_theory/</loc>
          <lastmod>2022-11-22</lastmod>
          <changefreq>daily</changefreq>
     </url>
@@ -21,17 +21,12 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/math/probability_theory/</loc>
+         <loc>https://example.com/math/differential_equation/ode/</loc>
          <lastmod>2022-11-22</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://example.com/tutorial/</loc>
-         <lastmod>2022-11-22</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://example.com/tutorial/specimen/</loc>
+         <loc>https://example.com/math/differential_equation/sde/</loc>
          <lastmod>2022-11-22</lastmod>
          <changefreq>daily</changefreq>
     </url>

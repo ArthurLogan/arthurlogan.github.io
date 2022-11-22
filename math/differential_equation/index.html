@@ -90,15 +90,7 @@
             
             <li class="nav-item" data-level="1"><a href="#differential-equation" class="nav-link">Differential Equation</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#1-origin" class="nav-link">1. Origin</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#2-modelling-ode" class="nav-link">2. Modelling ODE</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
-            <li class="nav-item" data-level="2"><a href="#3-modelling-sde" class="nav-link">3. Modelling SDE</a>
+            <li class="nav-item" data-level="2"><a href="#_1" class="nav-link">微分方程起源</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -111,160 +103,15 @@
 
 <h1 id="differential-equation">Differential Equation</h1>
 <p>本节内容参考了《An Introduction to modelling and likelihood inference with stochastic differential equations》这篇文章，这篇文章对微分方程的理解和推导都非常清晰，非常值得阅读。</p>
-<h2 id="1-origin">1. Origin</h2>
-<p>对于微分方程的研究最早起源于布朗运动。漂浮在水面上的花粉粒子，每时每刻都会和其速度方向相反的阻力以及由于水分子碰撞导致的随机方向的受力。在宏观意义上，花粉粒子的运动路径就是这些微观受力过程在连续时间维度上的积分。</p>
-<h2 id="2-modelling-ode">2. Modelling ODE</h2>
-<p>关注对于连续时间过程的建模。此处明确本文的符号表示：</p>
+<p>我查询了相关定理，整理为四个方面。</p>
 <ul>
-<li>
-<script type="math/tex">X</script>为实数函数，表示位置坐标。</li>
-<li>
-<script type="math/tex">s</script>为非负数，表示时间。</li>
-<li>
-<script type="math/tex">f, g</script>表示函数。</li>
+<li>微分方程起源</li>
+<li>常微分方程建模</li>
+<li>随机微分方程建模</li>
+<li>似然推断</li>
 </ul>
-<p>因此一个n阶的常微分方程可以如下表示：
-<script type="math/tex; mode=display">
-g(X^{(1)},X^{(2)},...,X^{(n)},X,s)=0
-</script>
-那些满足上述方程的<script type="math/tex">X</script>都可以称作微分方程的解，以下我们主要考虑一阶、时间均匀的微分方程，形式如：
-<script type="math/tex; mode=display">
-\frac{dX}{ds}=f(X(s))
-</script>
-通常称f为“<em>drift</em> of the process”。代入到布朗运动中，<script type="math/tex">s</script>时刻的粒子速度可以表示为粒子位置的函数。</p>
-<h3 id="21-solution">2.1 Solution</h3>
-<p>由于微分方程的解集是函数族，通常通过初始条件确定函数，如初始时刻的位置，此时路径可以表示为：
-<script type="math/tex; mode=display">
-X(t)=x_0+\int_0^tf(X(s))ds
-</script>
-</p>
-<p>考虑当 <em>drift</em> 是线性函数的常微分方程问题，即：
-<script type="math/tex; mode=display">
-\frac{dX}{ds}=\alpha X(s), X(0)=x_0>0
-</script>
-动用我们微积分知识知道，该常微分方程的解为：
-<script type="math/tex; mode=display">
-X(s)=x_0e^{\alpha s}
-</script>
-当参数 <script type="math/tex">\alpha>0</script> 时，路径会无穷远离零点，当参数<script type="math/tex">\alpha<0</script>时，路径会以指数速度趋于零点。这个例子指出了一个很有趣的性质，即线性的 <em>drift</em> 对应于指数级的路径变化；因此亚线性的 <em>drift</em> 对应的路径变化则不可能超过指数级变化速度，这种性质称为Grönwall's inequality。</p>
-<p><strong>Grönwall's inequality</strong>：考虑常微分方程的<em>drift</em>，满足 <script type="math/tex">f(x)\le\alpha x</script>，则不同时刻s和t(<script type="math/tex">s<t</script>)的位置坐标满足：
-<script type="math/tex; mode=display">
-X(t)\le X(s)e^{\alpha(t-s)}
-</script>
-</p>
-<h4 id="211-existence-and-uniqueness">2.1.1 Existence and Uniqueness</h4>
-<p>常微分方程的解的存在性和唯一性由 <em>drift</em> 确定，显然如果 <em>drift</em> 有第一类间断点，则至少在该点的微分不存在，因此这种情况下常微分方程无解。</p>
-<p><strong>唯一性</strong>：不妨假设<script type="math/tex">X</script>和<script type="math/tex">Y</script>均为常微分方程的解，令<script type="math/tex">Z=X-Y</script>，即<script type="math/tex">Z(0)=0</script>，因此有：
-<script type="math/tex; mode=display">
-\frac{d|Z|^2}{ds}=2Z(s)Z^{(1)}(s)=2Z(s)(f(X(s))-f(Y(s)))
-</script>
-<strong>Lipschitz condition</strong>：若存在正常数<script type="math/tex">L</script>使得在区间<script type="math/tex">A</script>上任意两点<script type="math/tex">x, y</script>满足：
-<script type="math/tex; mode=display">
-|f(x)-f(y)|\le L|x-y|
-</script>
-若Lipschitz条件在整个实数轴上成立，则根据Grönwall's inequality有：
-<script type="math/tex; mode=display">
-\frac{d|Z|^2}{ds}\le 2L|Z|^2\Rightarrow |Z(s)|^2\le |Z(0)|^2e^{2Ls}
-</script>
-在初始时刻二者均满足初始点条件，则有两个解的差值恒为零，即常微分方程解唯一。与此相关的有两条性质：</p>
-<ul>
-<li>在 <em>drift</em> 可微的条件下，Lipschitz条件和 <script type="math/tex">f</script> 的微分在区间上有界等价。</li>
-<li>若 <em>drift</em> 满足Lipschitz条件，则 <em>drift</em> 有线性增加上界，即 <script type="math/tex">|f(x)|\le \alpha|x|+\beta</script>。</li>
-</ul>
-<p>若 <em>drift</em> 只在开区间<script type="math/tex">(a,b)</script> 上满足Lipschitz条件，并且初始位置属于这个开区间内，则唯一性条件保证至少存在时间区间 <script type="math/tex">(-\delta,\delta)</script> 中解唯一，因为经过短暂时间 <script type="math/tex">\delta</script> 后，路径可能超过开区间从而导致Lipschitz条件不再成立。</p>
-<p>以 <script type="math/tex">f(x)=\sqrt{x}, x_0=0</script> 为例，且由于 <script type="math/tex">f'</script> 在任何包含0的区间上都不连续，因此不满足Lipschitz条件，不能保证解唯一存在，可以验证对于任何正数<script type="math/tex">c</script>，以下函数均为常微分方程的解：
-<script type="math/tex; mode=display">
-X(s)=\left\{\begin{matrix}
-0 & s\le c\\ 
-\frac{(s-c)^2}{4} & s>c
-\end{matrix}\right.
-</script>
-在这种情况下，宏观过程是不可预测的，其会停留在初始位置，并且会在某时刻离开初始位置并趋于正无穷，这个时刻和当前状态以及微观 <em>drift</em> 均无关。</p>
-<p><strong>存在性</strong>：Lipschitz条件同样足够证明常微分方程解的存在性。</p>
-<p><strong>Banach fixed-point theorem</strong>：设 <script type="math/tex">(X,d)</script> 是紧测度空间，且 <script type="math/tex">T: X\rightarrow X</script> 是收缩映射，即存在 <script type="math/tex">q\in[0, 1)</script> 使得 <script type="math/tex">d(T(x), T(y))\le qd(x, y)</script>，则在 <script type="math/tex">X</script> 上存在唯一不动点 <script type="math/tex">x^*\rightarrow T(x^*)=x^*</script> 。</p>
-<p>证明：任选初始点 <script type="math/tex">x_0</script>，构造数列 <script type="math/tex">x_n=T(x_{n-1})</script>，则由收缩映射 <script type="math/tex">d(x_{n+1},x_n)\le q^nd(x_1,x_0)</script>，由下式得数列 <script type="math/tex">\{x_n\}</script> 是柯西数列。
-<script type="math/tex; mode=display">
-d(x_m,x_n)\le d(x_m,x_{m-1})+...+d(x_{n+1},x_n)\le\frac{q^n}{1-q}d(x_1,x_0)
-</script>
-因此数列 <script type="math/tex">\{x_n\}</script> 收敛，设极限值为 <script type="math/tex">x^*</script>，则有：
-<script type="math/tex; mode=display">
-x^*=\lim_{n\rightarrow+\infty}x_n=\lim_{n\rightarrow+\infty}T(x_{n-1})=T(\lim_{n\rightarrow+\infty}x_{n-1})=T(x^*)
-</script>
-<strong>Picard–Lindelöf theorem</strong>：设包含初始条件的常微分方程，定义在 <script type="math/tex">[x_0-a,x_0+a]\times [y_0-b,y_0+b]</script> 上的连续函数 <script type="math/tex">f</script>，且对 <script type="math/tex">y</script> 满足Lipschitz条件，则常微分方程的解存在。</p>
-<p>证明：构造映射 <script type="math/tex">\varphi: y\rightarrow y_0+\int_{x_0}^x f(x,y)dx</script>，因此有
-<script type="math/tex; mode=display">
-|\varphi(y_2)-\varphi(y_1)|=\left|\int_{x_0}^x f(x,y_2)-f(x,y_1)dx\right|\le \int_{x_0}^x|f(x,y_2)-f(x,y_1)|dx\le La|y_2-y_1|
-</script>
-因此令 <script type="math/tex">La<1, \varphi</script> 是压缩映射，则有不动点 <script type="math/tex">y^*\rightarrow y^*=y_0+\int_{x_0}^x f(t, y^*)dt</script>，显然该不动点即为常微分方程的解。不动点定理保证，在满足Lipschitz条件的区间内，该解存在且唯一，并可以构造序列逼近，令 <script type="math/tex">Y_0=y_0</script>，按照如下构造最终的结果会趋于常微分方程的解。
-<script type="math/tex; mode=display">
-Y_n=y_0+\int_{x_0}^x f(x,Y_{n-1})dx
-</script>
-</p>
-<h3 id="22-analysis">2.2 Analysis</h3>
-<p>ODE描述了过程 <script type="math/tex">X</script> 的微观状态，ODE的解表示了过程 <script type="math/tex">X</script> 的宏观状态。在一个很短的时间段里，下一时刻的状态可以近似为：
-<script type="math/tex; mode=display">
-X(h)=x_0+\int_0^hf(X(s))ds\approx x_0+hf(x_0)
-</script>
-在对ODE进行分析时，不妨假设包含初值的常微分方程存在唯一解，由于 <em>drift</em> 的复杂性，我们很可能无法显式表达常微分方程的解，但 <em>drift</em> 同样能提供解路径的很多信息。</p>
-<p>考察 <em>drift</em> 的零点 <script type="math/tex">x^*\rightarrow f(x^*)=x^*</script>，这些点成为不动点，若过程起始于不动点，则过程永远不会离开初始点。不动点可以分为稳定不动点和非稳定不动点。</p>
-<ul>
-<li>稳定不动点：不动点两侧的 <em>drift</em> 从正到负，推动着附近的点靠近不动点。</li>
-<li>非稳定不动点：不动点两侧的 <em>drift</em> 从负到正，推动着附近的点远离不动点。</li>
-</ul>
-<h3 id="23-numerical-approximation">2.3 Numerical Approximation</h3>
-<p>常微分方程的求解可以看成计算隐式积分的过程，因此在数值分析中学习的数值积分方程都可以用于ODE的近似求解。如：欧拉法（向前、向后），梯形法，Runge-Kutta法，多步法等。</p>
-<p>以向前欧拉法为例，将 <script type="math/tex">[0, T]</script> 时间段平均分成n份，每份长度为 <script type="math/tex">h=T/n</script>，通过上述近似方法迭代计算时刻下一时刻的路径位置，通过直接连接相邻时刻点的位置近似估计积分值。
-<script type="math/tex; mode=display">
-\tilde{X}(ih)=\tilde{X}((i-1)h)+f(\tilde{X}((i-1)h))h,i\ge 1
-</script>
-</p>
-<h2 id="3-modelling-sde">3. Modelling SDE</h2>
-<p>从ODE到SDE的过渡是理所当然的。不妨考虑病毒感染的过程，尽管平均意义上计算出感染率 <script type="math/tex">\alpha</script>，但实际过程中感染率并不恒等于 <script type="math/tex">\alpha</script>，而是在其附近波动，由于各种无法预估的生理条件。因此会遇到我们并没有足够信息去确定的动态过程。在病毒增长模型中，可以构建随机模型：
-<script type="math/tex; mode=display">
-\frac{dX}{ds}=(\alpha+\text{"error"})X(s), X(0)=x_0
-</script>
-可以明确的是，“error”在同一时刻对于所有情况的均值是0，从而保证整体增长率仍然是 <script type="math/tex">\alpha</script>，如果“error”的方差也趋于零，则SDE会退化成ODE。对比SDE和退化的ODE，SDE的图像在ODE图像上下波动，波动幅度取决于“error”的方差。以下为了明确“error”本身是随机变量，则会以 <script type="math/tex">X(\omega, t)</script> 的形式表示，涉及的相关性质如范围等则等价于：
-<script type="math/tex; mode=display">
-P[X(t)\in(0,1)]=P[\{\omega: X(\omega, t)\in(0,1)\}]
-</script>
-</p>
-<h3 id="31-stochastic-differential-equation">3.1 Stochastic Differential Equation</h3>
-<p>我们首先给出随机微分方程的积分形式，再解释推导过程。
-<script type="math/tex; mode=display">
-X(t)=x_0+\int_0^tf(X(s))ds+\sigma B(t), t\ge 0\tag{3.1}
-</script>
-右侧的前两项和ODE的结果相同，第三项我们希望能捕捉波动的部分。在任意时刻，<script type="math/tex">B(t)</script> 是随机变量，从而引入 <script type="math/tex">X(t)</script> 路径的多样性和随机性，从而 <script type="math/tex">B(t), X(t)</script> 都是随机过程，从而表示成随机过程的形式：
-<script type="math/tex; mode=display">
-X(\omega,t)=x_0+\int_0^tf(X(\omega,s))ds+\sigma B(\omega,t)
-</script>
-则问题可以转化为对随机过程 <script type="math/tex">B(\omega, t)</script> 性质研究。</p>
-<ul>
-<li>
-<p><strong>Initial Point</strong>：在零时刻，必然处在初始位置。<script type="math/tex">B(\omega, 0)=0</script>。</p>
-</li>
-<li>
-<p><strong>Zero Expectation</strong>：任意时刻的路径仍以 <script type="math/tex">f(X(\omega, t))</script> 为中心，则有 <script type="math/tex">E[B(t+h)-B(t)]=0</script>。</p>
-</li>
-</ul>
-<p>
-<script type="math/tex; mode=display">
-X(\omega,t+h)-X(\omega,t)=\int_t^{t+h}f(X(\omega,s))ds+\sigma\left(B(\omega,t+h)-B(\omega,t)\right)
-</script>
-</p>
-<ul>
-<li>
-<p><strong>Independent</strong>：在不同时刻的震动是独立的，即对于不同时刻 <script type="math/tex">s_1<s_2<t_1<t_2</script>，<script type="math/tex">B(s_2)-B(s_1)</script> 和 <script type="math/tex">B(t_2)-B(t_1)</script> 是独立的。</p>
-</li>
-<li>
-<p><strong>Identical</strong>：在不同时刻的震动是同分布的，即 <script type="math/tex">B(t+h)-B(t)</script> 只和 <script type="math/tex">h</script> 有关。</p>
-</li>
-</ul>
-<p>后两条性质其实说明路径 <script type="math/tex">X</script> 的波动是时间平稳的纯净噪声、不包含任何可预测的结构。得出一条很重要的性质：随机过程 <script type="math/tex">B(\omega, t)</script> 关于时间不是可微的，任何时刻前后的波动值无关、且可以相差很远，但这个过程可以关于时间连续的，基于连续的条件下，该随机过程存在且唯一，是布朗运动。</p>
-<p>对于随机微分方程解的存在性条件仍然值得研究，但在上述的严约束下，我们知道不存在所有采样路径均关于时间可微解，只能采样路径均关于时间连续的解，对应的噪声为布朗运动，同样可以写成微分形式，由于路径和布朗运动均不可微，因此实际表示积分过程的微小变化。
-<script type="math/tex; mode=display">
-dX(\omega, s)=f(X(\omega,s))ds+\sigma dB(\omega, s), X(\omega,0)=x_0
-</script>
-</p></div>
+<h2 id="_1">微分方程起源</h2>
+<p>对于微分方程的研究最早起源于布朗运动。漂浮在水面上的花粉粒子，每时每刻都会和其速度方向相反的阻力以及由于水分子碰撞导致的随机方向的受力。在宏观意义上，花粉粒子的运动路径就是这些微观受力过程在连续时间维度上的积分。</p></div>
             </div>
         </div>
 
