@@ -94,7 +94,11 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#2-modelling" class="nav-link">2. Modelling</a>
+            <li class="nav-item" data-level="2"><a href="#2-modelling-ode" class="nav-link">2. Modelling ODE</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#3-modelling-sde" class="nav-link">3. Modelling SDE</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -109,7 +113,7 @@
 <p>本节内容参考了《An Introduction to modelling and likelihood inference with stochastic differential equations》这篇文章，这篇文章对微分方程的理解和推导都非常清晰，非常值得阅读。</p>
 <h2 id="1-origin">1. Origin</h2>
 <p>对于微分方程的研究最早起源于布朗运动。漂浮在水面上的花粉粒子，每时每刻都会和其速度方向相反的阻力以及由于水分子碰撞导致的随机方向的受力。在宏观意义上，花粉粒子的运动路径就是这些微观受力过程在连续时间维度上的积分。</p>
-<h2 id="2-modelling">2. Modelling</h2>
+<h2 id="2-modelling-ode">2. Modelling ODE</h2>
 <p>关注对于连续时间过程的建模。此处明确本文的符号表示：</p>
 <ul>
 <li>
@@ -196,7 +200,30 @@ x^*=\lim_{n\rightarrow+\infty}x_n=\lim_{n\rightarrow+\infty}T(x_{n-1})=T(\lim_{n
 Y_n=y_0+\int_{x_0}^x f(x,Y_{n-1})dx
 </script>
 </p>
-<h3 id="analysis">Analysis</h3></div>
+<h3 id="22-analysis">2.2 Analysis</h3>
+<p>ODE描述了过程 <script type="math/tex">X</script> 的微观状态，ODE的解表示了过程 <script type="math/tex">X</script> 的宏观状态。在一个很短的时间段里，下一时刻的状态可以近似为：
+<script type="math/tex; mode=display">
+X(h)=x_0+\int_0^hf(X(s))ds\approx x_0+hf(x_0)
+</script>
+在对ODE进行分析时，不妨假设包含初值的常微分方程存在唯一解，由于 <em>drift</em> 的复杂性，我们很可能无法显式表达常微分方程的解，但 <em>drift</em> 同样能提供解路径的很多信息。</p>
+<p>考察 <em>drift</em> 的零点 <script type="math/tex">x^*\rightarrow f(x^*)=x^*</script>，这些点成为不动点，若过程起始于不动点，则过程永远不会离开初始点。不动点可以分为稳定不动点和非稳定不动点。</p>
+<ul>
+<li>稳定不动点：不动点两侧的 <em>drift</em> 从正到负，推动着附近的点靠近不动点。</li>
+<li>非稳定不动点：不动点两侧的 <em>drift</em> 从负到正，推动着附近的点远离不动点。</li>
+</ul>
+<h3 id="23-numerical-approximation">2.3 Numerical Approximation</h3>
+<p>常微分方程的求解可以看成计算隐式积分的过程，因此在数值分析中学习的数值积分方程都可以用于ODE的近似求解。如：欧拉法（向前、向后），梯形法，Runge-Kutta法，多步法等。</p>
+<p>以向前欧拉法为例，将 <script type="math/tex">[0, T]</script> 时间段平均分成n份，每份长度为 <script type="math/tex">h=T/n</script>，通过上述近似方法迭代计算时刻下一时刻的路径位置，通过直接连接相邻时刻点的位置近似估计积分值。
+<script type="math/tex; mode=display">
+\tilde{X}(ih)=\tilde{X}((i-1)h)+f(\tilde{X}((i-1)h))h,i\ge 1
+</script>
+</p>
+<h2 id="3-modelling-sde">3. Modelling SDE</h2>
+<p>从ODE到SDE的过渡是理所当然的。不妨考虑病毒感染的过程，尽管平均意义上计算出感染率 <script type="math/tex">\alpha</script>，但实际过程中感染率并不恒等于 <script type="math/tex">\alpha</script>，而是在其附近波动，由于各种无法预估的生理条件。因此会遇到我们并没有足够信息去确定的动态过程。在病毒增长模型中，可以构建随机模型：
+<script type="math/tex; mode=display">
+\frac{dX}{ds}=(\alpha+\text{"error"})X(s), X(0)=x_0
+</script>
+可以明确的是，“error”在同一时刻对于所有情况的均值是0，从而保证整体增长率仍然是 <script type="math/tex">\alpha</script>，如果“error”的方差也趋于零，则SDE会退化成ODE。对比采样得到的SDE以及退化的ODE图像，采样得到的SDE在ODE图像上下波动。</p></div>
             </div>
         </div>
 
