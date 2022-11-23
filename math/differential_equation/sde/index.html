@@ -300,6 +300,41 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#2-brownian-motion" class="md-nav__link">
+    2 Brownian Motion
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-existence-uniqueness" class="md-nav__link">
+    3 Existence &amp; Uniqueness
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-numerical-approximation" class="md-nav__link">
+    4 Numerical Approximation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-robust-model" class="md-nav__link">
+    5. Robust Model
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-integration-bounded-variation" class="md-nav__link">
+    6. Integration &amp; Bounded Variation
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -316,52 +351,132 @@
 
 
 <h1 id="modelling-sde">Modelling SDE</h1>
-<p>从ODE到SDE的过渡是理所当然的。不妨考虑病毒感染的过程，尽管平均意义上计算出感染率 <script type="math/tex">\alpha</script>，但实际过程中感染率并不恒等于 <script type="math/tex">\alpha</script>，而是在其附近波动，由于各种无法预估的生理条件。因此会遇到我们并没有足够信息去确定的动态过程。在病毒增长模型中，可以构建随机模型：
+<p>考虑病毒传播的过程，尽管平均意义上可以计算出感染率，但在传播的实际过程中，感染率不会恒定不变，而是在平均感染率附近波动。因此在微观方程中，需要增加无法估计的随机部分，因此从ODE到SDE的过渡是理所当然的，在病毒传播的例子中，随机过程模型为：
 <script type="math/tex; mode=display">
 \frac{dX}{ds}=(\alpha+\text{“error"})X(s), X(0)=x_0
 </script>
-可以明确的是，“error”在同一时刻对于所有情况的均值是0，从而保证整体增长率仍然是 <script type="math/tex">\alpha</script>，如果“error”的方差也趋于零，则SDE会退化成ODE。对比SDE和退化的ODE，SDE的图像在ODE图像上下波动，波动幅度取决于“error”的方差。以下为了明确“error”本身是随机变量，则会以 <script type="math/tex">X(\omega, t)</script> 的形式表示，涉及的相关性质如范围等则等价于：
-<script type="math/tex; mode=display">
-P[X(t)\in(0,1)]=P[\{\omega: X(\omega, t)\in(0,1)\}]
-</script>
-</p>
+需要注意的是，任意时刻随机部分的均值应为0，从而保证整体增长率是平均意义的增长率，若随机部分的方差也为0，则SDE会退化为ODE。为了直观说明误差的随机性，以 <script type="math/tex">X(\omega, t)</script> 表示。</p>
 <h3 id="1-stochastic-differential-equation">1 Stochastic Differential Equation</h3>
-<p>我们首先给出随机微分方程的积分形式，再解释推导过程。
+<p>我们直接给出随机微分方程的积分形式，再解释过程。
 <script type="math/tex; mode=display">
 X(t)=x_0+\int_0^tf(X(s))ds+\sigma B(t), t\ge 0\tag{3.1}
 </script>
-右侧的前两项和ODE的结果相同，第三项我们希望能捕捉波动的部分。在任意时刻，<script type="math/tex">B(t)</script> 是随机变量，从而引入 <script type="math/tex">X(t)</script> 路径的多样性和随机性，从而 <script type="math/tex">B(t), X(t)</script> 都是随机过程，从而表示成随机过程的形式：
+右侧的前两项和常微分方程的结果相同，第三项我们希望捕捉误差的积累部分(<em>fluctuation</em>，涨落)。我们知道由于误差部分是随机变量的累计，因而 <script type="math/tex">X(t), B(t)</script> 均是随机过程。我们将目光关注在误差积累的性质上，经过一个短时间段变化，有：
 <script type="math/tex; mode=display">
-X(\omega,t)=x_0+\int_0^tf(X(\omega,s))ds+\sigma B(\omega,t)
+X(\omega,t+h)-X(\omega,t)=\int_t^{t+h}f(X(\omega,s))ds+\sigma\left(B(\omega,t+h)-B(\omega,t)\right)\tag{3.2}
 </script>
-则问题可以转化为对随机过程 <script type="math/tex">B(\omega, t)</script> 性质研究。</p>
+由此我们可以得到关于误差 <script type="math/tex">B(\omega, t)</script> 的三条性质：</p>
 <ul>
-<li>
-<p><strong>Initial Point</strong>：在零时刻，必然处在初始位置。<script type="math/tex">B(\omega, 0)=0</script>。</p>
-</li>
-<li>
-<p><strong>Zero Expectation</strong>：任意时刻的路径仍以 <script type="math/tex">f(X(\omega, t))</script> 为中心，则有 <script type="math/tex">E[B(t+h)-B(t)]=0</script>。</p>
-</li>
+<li><strong>初始条件</strong>：初始时刻，坐标必然处在初始位置，因此 <script type="math/tex">B(\omega, 0)=0</script>。</li>
+<li><strong>零均值</strong>：平均意义上路径符合常微分方程的解，因此 <script type="math/tex">E[B(t+h)-B(t)]=0</script>。</li>
+<li><strong>时间平稳</strong>：不同时刻经过相同时间段的误差增量是独立同分布的，对于 <script type="math/tex">s_1<s_2<t_1<t_2</script>，有 <script type="math/tex">B(s_2)-B(s_1)</script> 和 <script type="math/tex">B(t_2)-B(t_1)</script> 独立，<script type="math/tex">B(t+h)-B(t)</script> 只和 <script type="math/tex">h</script> 有关。</li>
+</ul>
+<p>时间平稳性质说明涨落过程是不包含任何可预测的纯净噪声，并且由于任意时刻前后的波动值独立同分布，显然二者可以相差很大，因此 <script type="math/tex">B(\omega, t)</script> 关于时间是不可微的。考虑是否存在随机过程满足如上的三条性质，且任意采样过程关于时间连续？答案是存在唯一的随机过程满足这些条件，它就是随机过程的两大基石之一——布朗运动。我们同样可以将SDE写成微观方程，但由于在布朗运动的条件下坐标和误差都不可微，因此微分方程实际含义同 (3.2) 式的含义相同。
+<script type="math/tex; mode=display">
+dX(\omega, s)=f(X(\omega,s))ds+\sigma dB(\omega, s), X(\omega,0)=x_0\tag{3.3}
+</script>
+</p>
+<h2 id="2-brownian-motion">2 Brownian Motion</h2>
+<p>我们简单介绍布朗运动的性质，关于详细的解释和推导可以参考林元烈《应用随机过程》。</p>
+<ul>
+<li><strong>初始条件</strong>：<script type="math/tex">P[B(0)=0]=1</script>。</li>
+<li><strong>时间平稳</strong>：相同时间间隔的增量独立同分布，<script type="math/tex">B(t)-B(s)\sim N(0,|t-s|)</script>。</li>
+<li><strong>联合分布</strong>：不同时刻的布朗运动坐标的联合分布服从高斯分布，均值和协方差矩阵为：</li>
 </ul>
 <p>
 <script type="math/tex; mode=display">
-X(\omega,t+h)-X(\omega,t)=\int_t^{t+h}f(X(\omega,s))ds+\sigma\left(B(\omega,t+h)-B(\omega,t)\right)
+\mu=\left(E[B(s_i)]\right)_i=0, \Sigma=\left(\text{Cov}(B(s_i),B(s_j))\right)_{i,j}=(\min\{s_i,s_j\})
 </script>
 </p>
 <ul>
-<li>
-<p><strong>Independent</strong>：在不同时刻的震动是独立的，即对于不同时刻 <script type="math/tex">s_1<s_2<t_1<t_2</script>，<script type="math/tex">B(s_2)-B(s_1)</script> 和 <script type="math/tex">B(t_2)-B(t_1)</script> 是独立的。</p>
-</li>
-<li>
-<p><strong>Identical</strong>：在不同时刻的震动是同分布的，即 <script type="math/tex">B(t+h)-B(t)</script> 只和 <script type="math/tex">h</script> 有关。</p>
-</li>
+<li><strong>似然函数</strong>：假设在时间序列 <script type="math/tex">0, t_1,...,t_n</script> 上观察到布朗运动的值为 <script type="math/tex">x_0, x_1,...,x_n</script>，对于的似然函数为：</li>
 </ul>
-<p>后两条性质其实说明路径 <script type="math/tex">X</script> 的波动是时间平稳的纯净噪声、不包含任何可预测的结构。得出一条很重要的性质：随机过程 <script type="math/tex">B(\omega, t)</script> 关于时间不是可微的，任何时刻前后的波动值无关、且可以相差很远，但这个过程可以关于时间连续的，基于连续的条件下，该随机过程存在且唯一，是布朗运动。</p>
-<p>对于随机微分方程解的存在性条件仍然值得研究，但在上述的严约束下，我们知道不存在所有采样路径均关于时间可微解，只能采样路径均关于时间连续的解，对应的噪声为布朗运动，同样可以写成微分形式，由于路径和布朗运动均不可微，因此实际表示积分过程的微小变化。
+<p>
 <script type="math/tex; mode=display">
-dX(\omega, s)=f(X(\omega,s))ds+\sigma dB(\omega, s), X(\omega,0)=x_0
+f(x_1,...,x_n;t_1,...,t_n,x_0)=\prod_{i=1}^n\frac{1}{\sqrt{2\pi(t_i-t_{i-1})}}e^{-\frac{(x_i-x_{i-1})^2}{2(t_i-t_{i-1})}}
 </script>
 </p>
+<ul>
+<li><strong>采样模拟</strong>：布朗运动是连续时间且不可微的随机过程，通常通过离散时间采样近似模拟。</li>
+</ul>
+<p>
+<script type="math/tex; mode=display">
+B(\omega, s_i)=B(\omega,s_{i-1})+\sqrt{s_i-s_{i-1}}Z_i,Z_i\sim N(0,1)
+</script>
+</p>
+<h2 id="3-existence-uniqueness">3 Existence &amp; Uniqueness</h2>
+<p>通过Lipschitz条件同样能保证随机微分方程解的存在和唯一性。</p>
+<h2 id="4-numerical-approximation">4 Numerical Approximation</h2>
+<p>和常微分方程类似，我们同样通过前向欧拉法近似计算不同时刻坐标位置。
+<script type="math/tex; mode=display">
+\begin{align*}X(t+h)-X(t)&=\int_t^{t+h}f(X(s))ds+\sigma(B(t+h)-B(t))\\&\approx hf(X(t))+\sigma(B(t+h)-B(t))\end{align*}
+</script>
+因此在 <script type="math/tex">t</script> 时刻的位置给定时，可以估计下一时刻的分布：
+<script type="math/tex; mode=display">
+X(t+h)\sim N(X(t)+hf(X(t)), \sigma^2h)
+</script>
+因此前向欧拉法的迭代过程如下所示，这也被称为随机欧拉方法。
+<script type="math/tex; mode=display">
+\tilde{X}(ih)=\tilde{X}((i-1)h)+f(\tilde{X}((i-1)h))h+\sigma\sqrt{h}Z_i
+</script>
+</p>
+<details class="example">
+<summary><strong>Ornstein-Unlenbeck Process</strong></summary>
+<p>随机微分方程形式如：<script type="math/tex">d(X(s))=\alpha(\mu-X(s))ds+\sigma dB(s), X(0)=x_0</script>，可以显示求解得：
+<script type="math/tex; mode=display">
+E[X(t)]=e^{-\alpha t}(x_0-\mu)+\mu
+</script>
+我们知道 <script type="math/tex">\mu</script> 是不动点，当 <script type="math/tex">\alpha>0</script> 时为稳定不动点，即采样路径最终会趋向于 <script type="math/tex">\mu</script>，在距离 <script type="math/tex">\mu</script> 较远时 <em>drift</em> 起主要作用，在距离 <script type="math/tex">\mu</script> 较近时， <em>fluctuation</em> 起主要作用。</p>
+</details>
+<details class="example">
+<summary><strong>Double-well</strong></summary>
+<p>考虑 <em>drift</em> 形式如下式的随机微分方程，显然 <em>drift</em> 包含-1，1两个稳定不动点和0不稳定不动点。
+<script type="math/tex; mode=display">
+f(x)=x\left(\frac{8}{(1+x^2)^2}-2\right)
+</script>
+在常微分方程中，不同的初始值最终会确认收敛到不同的不动点。但由于随机微分方程中增加了随机涨落，因此其不仅可能收敛于某个稳定的不动点，还有可能在不同的不动点之间跳跃，取决于涨落的方差。</p>
+</details>
+<details class="example">
+<summary>Non-Lipschitz Case</summary>
+<p>考虑 <em>drift</em> 形式如下式的随机微分方程，显然不符合Lipschitz条件，但可以验证解存在。
+<script type="math/tex; mode=display">
+f(x)=-x^3
+</script>
+</p>
+<p>
+<script type="math/tex; mode=display">
+X(s)=\frac{x_0}{\sqrt{1+2sx_0^2}}, s>-\frac{1}{2x_0^2}
+</script>
+</p>
+<p>当 <script type="math/tex">s\rightarrow -1/(2x_0^2)</script> 时，<em>drift</em> 的值非常大，即起始位置越大，零时刻越靠近 <script type="math/tex">-1/(2x_0^2)</script>，则初始时刻下降的速度越快，因此收敛速度非常快。</p>
+</details>
+<h2 id="5-robust-model">5. Robust Model</h2>
+<p>数值积分的方法为我们求解随机微分方程提供了近似方法，但还是不够的，我们知道向前欧拉法随着时间的发展误差会越来越大。我们希望真正能从数学上研究随机微分方程的宏观结果，真正意义地解决它。</p>
+<p>我们首先考虑 (3.3) 中SDE对应的解 <script type="math/tex">X</script>，如果在 <script type="math/tex">X</script> 的基础上增加变化得到 <script type="math/tex">Y</script>，是否仍保持类似的形式？不妨假设 <script type="math/tex">X(t)=B(t), Y(t)=e^{X(t)}</script>，则经过很短时间 <script type="math/tex">h</script> 后有：
+<script type="math/tex; mode=display">
+\begin{align*}
+Y(t+h)-Y(t)&=\exp\{B(t+h)\}-\exp\{B(t)\}\\&\approx Y(t)(\sqrt{h}Z+hZ^2/2)
+\end{align*}
+</script>
+因此可得：
+<script type="math/tex; mode=display">
+E[Y(t+h)-Y(t)|Y(t)]\approx \frac{Y(t)}{2}h, \text{Var}[Y(t+h)-Y(t)|Y(t)]\approx Y(t)^2h
+</script>
+此时变换结果就和此前随机微分方程的解不同了，其条件方差的结果和当前的位置有关系了，此时微观过程近似可以表示为：
+<script type="math/tex; mode=display">
+dY(s)=\frac{Y(s)}{2}ds+Y(s)dB(s)
+</script>
+对微观过程积分可以得到：
+<script type="math/tex; mode=display">
+Y(t)=y_0+\int_0^t\frac{Y(s)}{2}ds+\int_0^tY(s)dB(s)
+</script>
+上面的例子提供了两个启示：其一是为了继续对随机微分方程的建模，我们必须要研究对布朗运动的积分；其二是促使我们构建更鲁棒的模型，能够兼容上面的不同的变换，我们构建如下微观过程：
+<script type="math/tex; mode=display">
+X(t)=x_0+\int_0^tf(X(s))ds+\int_0^t\sigma(X(s))dB(s)
+</script>
+这个微分方程说明了在不同时刻涨落的幅度不再是恒定的值，而是和当前位置相关的，若涨落的方差为定值，则退化为 (3.1) 的形式。</p>
+<h2 id="6-integration-bounded-variation">6. Integration &amp; Bounded Variation</h2>
+<p>本小节增加了许多数学推导，通过黎曼积分的定义去计算对布朗运动的积分。</p>
 
 
 
