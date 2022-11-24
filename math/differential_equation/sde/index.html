@@ -485,7 +485,7 @@ X(t)=x_0+\int_0^tf(X(s))ds+\int_0^t\sigma(X(s))dB(s)\tag{5.5}
 <li>积分变量和被积函数都是随机过程，涉及到几乎处处、一致收敛等。</li>
 <li>积分变量和被积函数通常是相互独立的，处理相互独立的随机变量是很困难的，因而需要将被积函数限制在特定的函数族中。</li>
 </ul>
-<p>让我们重新回顾黎曼积分，通过黎曼和的形式构造得到，不妨设区间 <script type="math/tex">[a,b]</script> 的一个分割为 <script type="math/tex">a=t_0le t_1\le ...\le t_{n-1}\le t_n=b </script>，并且当 <script type="math/tex">n\rightarrow \infty</script> 时，间隔 <script type="math/tex">\sup_i\{\Delta t_i\}\rightarrow 0</script>，则黎曼和形式为：
+<p>让我们重新回顾黎曼积分，通过黎曼和的形式构造得到，不妨设区间 <script type="math/tex">[a,b]</script> 的一个分割为 <script type="math/tex">a=t_0\le t_1\le ...\le t_{n-1}\le t_n=b </script>，并且当 <script type="math/tex">n\rightarrow \infty</script> 时，间隔 <script type="math/tex">\sup_i\{\Delta t_i\}\rightarrow 0</script>，则黎曼和形式为：
 <script type="math/tex; mode=display">
 \sum_{i=1}^n g(s_i)\Delta t_i
 </script>
@@ -494,13 +494,55 @@ X(t)=x_0+\int_0^tf(X(s))ds+\int_0^t\sigma(X(s))dB(s)\tag{5.5}
 \sum_{i=1}^n g(s_i)\Delta F_i,\ \  \Delta F_i=F(t_i)-F(t_{i-1})
 </script>
 其中 <script type="math/tex">s_i</script> 为区间 <script type="math/tex">(t_{i-1}, t_i)</script> 中任意点，若映射 <script type="math/tex">F</script> 为单位映射，则退化成黎曼积分。若 <script type="math/tex">F</script> 为累积分布函数，则黎曼-斯蒂尔杰斯积分表示为被积函数的期望。</p>
+<p>以下我们介绍P次变差的概念，并引入 <strong>Jordan</strong> 定理辅助说明布朗运动作为积分元的特殊性。</p>
 <details class="note">
-<summary><strong>P次变差</strong></summary>
+<summary><strong>P-Variation</strong></summary>
 <p>构建从映射 <script type="math/tex">F: [a,b]\mapsto R</script>，对于任何常数 <script type="math/tex">p>0</script>，定义p次变差 <script type="math/tex">V^{(p)}[F,a,b]</script> 为：
 <script type="math/tex; mode=display">
 V^{(p)}[F,a,b]=\lim_{n\rightarrow \infty}V_n^{(p)}[F,a,b]=\lim_{n\rightarrow\infty}\sum_{i=1}^n|\Delta F_i|^p
 </script>
-<script type="math/tex">V^{(1)}[F,a,b]</script> 称为总变差，<script type="math/tex">V^{(2)}[F,a,b]</script> 称为二次变差。若函数的总变差在闭区间 <script type="math/tex">[a,b]</script> 上是有限的，则称函数是有界变差。</p>
+<script type="math/tex">V^{(1)}[F,a,b]</script> 称为总变差，<script type="math/tex">V^{(2)}[F,a,b]</script> 称为二次变差。若函数的总变差在闭区间 <script type="math/tex">[a,b]</script> 上是有限的，则称函数是有限变差，记作 <script type="math/tex">f\in V[a,b]</script>。</p>
+</details>
+<details class="note">
+<summary><strong>Lemma 1</strong></summary>
+<p>设函数 <script type="math/tex">f:[a,b]\rightarrow R</script>，<script type="math/tex">c</script> 是开区间 <script type="math/tex">(a,b)</script> 上的任意点。则 <script type="math/tex">f\in V[a,b]</script> 和 <script type="math/tex">f\in V[a,c], f\in V[c, b]</script> 等价，且如下等式成立。</p>
+<p>
+<script type="math/tex; mode=display">
+V_a^b(f)=V_a^c(f)+V_c^b(f)
+</script>
+证明：首先证明必要性，不妨设 <script type="math/tex">\Pi_1</script> 为 <script type="math/tex">[a,c]</script> 上的分割，对 <script type="math/tex">\Pi_1</script> 增加 <script type="math/tex">b</script> 点，可扩展为 <script type="math/tex">[a,b]</script> 上的分割 <script type="math/tex">\Pi</script>，则有：
+<script type="math/tex; mode=display">
+V_{\Pi}(f)=V_{\Pi_1}+|f(b)-f(c)|\le V_a^b(f)\Rightarrow V_{\Pi_1}\le V_a^b(f)-|f(b)-f(c)|
+</script>
+即子区间 <script type="math/tex">[a,c]</script> 上的任意分割均有上界，则为有限变差，同理在 <script type="math/tex">[c,b]</script> 上为有限变差。</p>
+<p>再证明充分性，不妨设 <script type="math/tex">\Pi</script> 为 <script type="math/tex">[a,b]</script> 上分割，增加点 <script type="math/tex">c</script> 将 <script type="math/tex">\Pi</script> 划分成 <script type="math/tex">[a,c], [c,b]</script> 上的分割 <script type="math/tex">\Pi_1, \Pi_2</script>，则有：
+<script type="math/tex; mode=display">
+V_{\Pi}(f)=V_{\Pi_1}+V_{\Pi_2}\le V_a^c(f)+V_c^b(f)
+</script>
+则在 <script type="math/tex">[a,b]</script> 上的任意分割均有上界，则为有限变差。极限保序性可得：<script type="math/tex">V_a^b(f)\le V_a^c(f)+V_c^b(f)</script>。将 <script type="math/tex">[a,c], [c,b]</script> 的分割合并即得到 <script type="math/tex">[a,b]</script> 上的分割，则有：<script type="math/tex">V_a^c(f)+V_c^b(f)\le V_a^b(f)</script>，则等式成立。</p>
+</details>
+<details class="note">
+<summary><strong>Jordan Theorem</strong></summary>
+<p>若 <script type="math/tex">F</script> 在区间上是有限变差，则 <script type="math/tex">F</script> 可以表示成两个非降函数 <script type="math/tex">F_1, F_2</script> 的差，从而当 <script type="math/tex">F</script> 作为积分元时，可以拆分成两个黎曼-斯蒂尔杰斯积分的差。
+<script type="math/tex; mode=display">
+F(s)=F_1(s)-F_2(s), F_1,F_2 \text{ increasing}
+</script>
+</p>
+<p>
+<script type="math/tex; mode=display">
+\int_a^b g(s)dF(s)=\int_a^b g(s)dF_1(s)-\int_a^b g(s)dF_2(s)
+</script>
+</p>
+<p>证明：构造 <script type="math/tex">v(x)=V_a^x(f)</script>，则构造 <script type="math/tex">f(x)=v(x)-(v(x)-f(x))</script>，以下证明 <script type="math/tex">v(x)</script>，<script type="math/tex">v(x)-f(x)</script> 均为非减函数，对于 <script type="math/tex">x_1<x_2</script>，有：
+<script type="math/tex; mode=display">
+v(x_2)-v(x_1)=V_{x_1}^{x_2}(f)\ge 0
+</script>
+</p>
+<p>
+<script type="math/tex; mode=display">
+f(x_2)-f(x_1)\le V_{x_1}^{x_2}(f)=v(x_2)-v(x_1)
+</script>
+</p>
 </details>
 
 
