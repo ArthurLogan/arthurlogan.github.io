@@ -335,6 +335,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#7-itos-formula" class="md-nav__link">
+    7. Ito's Formula
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -493,7 +500,7 @@ X(t)=x_0+\int_0^tf(X(s))ds+\int_0^t\sigma(X(s))dB(s)\tag{5.5}
 <script type="math/tex; mode=display">
 \sum_{i=1}^n g(s_i)\Delta F_i,\ \  \Delta F_i=F(t_i)-F(t_{i-1})
 </script>
-其中 <script type="math/tex">s_i</script> 为区间 <script type="math/tex">(t_{i-1}, t_i)</script> 中任意点，若映射 <script type="math/tex">F</script> 为单位映射，则退化成黎曼积分。若 <script type="math/tex">F</script> 为累积分布函数，则黎曼-斯蒂尔杰斯积分表示为被积函数的期望。</p>
+其中 <script type="math/tex">s_i</script> 为区间 <script type="math/tex">(t_{i-1}, t_i)</script> 中任意点，映射 <script type="math/tex">F</script> 为单位映射时，则退化成黎曼积分。若 <script type="math/tex">F</script> 为累积分布函数，则黎曼-斯蒂尔杰斯积分表示为被积函数的期望。</p>
 <p>以下我们介绍P次变差的概念，并引入 <strong>Jordan</strong> 定理辅助说明布朗运动作为积分元的特殊性。</p>
 <details class="note">
 <summary><strong>P-Variation</strong></summary>
@@ -544,6 +551,54 @@ f(x_2)-f(x_1)\le V_{x_1}^{x_2}(f)=v(x_2)-v(x_1)
 </script>
 </p>
 </details>
+<p>如果布朗运动在定义域上是有限变差，那么通过 <strong>Jordan</strong> 定理就可以将其拆分成两个黎曼-斯蒂尔杰斯积分的差，就可以用我们的微积分知识解决！太棒了！我们来验证布朗运动是否是有限变差。</p>
+<details class="note" open="open">
+<summary><strong>Quadratic Variation</strong></summary>
+<p>布朗运动在 <script type="math/tex">[0,t]</script> 区间上的二次变差以概率1等于区间长度 <script type="math/tex">t</script>，即：
+<script type="math/tex; mode=display">
+\lim_{n\rightarrow \infty}E\left[\left(\sum_{i=1}^n|\Delta B_i|^2-t\right)^2\right]=0
+</script>
+其中 <script type="math/tex">\Delta B_i=B(\omega, t_i)-B(\omega, t_{i-1})</script>。将式子展开整理，其中 <script type="math/tex">\Delta B_i</script> 项通过高斯分布积分可以表示成 <script type="math/tex">\Delta t_i</script> 的形式，整理得：
+<script type="math/tex; mode=display">
+E\left[\left(\sum_{i=1}^n|\Delta B_i|^2-t\right)^2\right]=2E\left[\sum_{i=1}^n(\Delta t_i)^2\right]
+</script>
+随着分割点越来越多，<script type="math/tex">\sum_{i=1}^n(\Delta t_i)^2=\sum_{i=1}^nt_i\Delta t_i-\sum_{i=1}^nt_{i-1}\Delta t_i\rightarrow t^2/2-t^2/2=0</script>，因此结论成立。</p>
+</details>
+<details class="note" open="open">
+<summary><strong>BM is of Unbounded Variation</strong></summary>
+<p>如果二次变差非零，说明总变差为无穷大，即函数在区间上不是有限变差。根据p次变差的定义有：
+<script type="math/tex; mode=display">
+V_n^{(2)}[F,a,b]\le \sup_i|\Delta F_i|\times V_n^{(1)}[F,a,b]
+</script>
+随着分割点数增大，分割间隔趋于零，因此若总变差有限，则二次变差应该为零，即得证。</p>
+</details>
+<p>呜呜呜，折腾了半天，发现布朗运动并不是有限变差，也就是我们并不能用传统的黎曼-斯蒂尔杰斯积分方法去计算，那么问题出在哪里？</p>
+<p>让我们重新回看黎曼-斯蒂尔杰斯积分，我们是通过黎曼-斯蒂尔杰斯和的形式去定义的，其中涉及到极限的结果应该和分割的选择、函数点的选择无关。以下我们结合例子，看看函数点的选择和结果是否有关。</p>
+<details class="example" open="open">
+<summary>Example</summary>
+<p>考虑如下积分，分别通过两个黎曼-斯蒂尔杰斯和 <script type="math/tex">I_n, J_n</script> 进行估计。
+<script type="math/tex; mode=display">
+\int_0^tB(\omega,s)dB(\omega, s)
+</script>
+</p>
+<p>
+<script type="math/tex; mode=display">
+I_n(\omega)=\sum_{i=1}^nB(\omega,t_{i-1})\Delta B_i, \ \ J_n(\omega)=\sum_{i=1}^nB(\omega,t_i)\Delta B_i
+</script>
+</p>
+<p>即两个黎曼和在每个分割区间上分别选取左端点和右端点进行计算，结合上述二次变差我们会发现：
+<script type="math/tex; mode=display">
+J_n(\omega)-I_n(\omega)=\sum_{i=1}^n(\Delta B_i)^2\rightarrow t
+</script>
+也就是说，由于布朗运动在很短时间内运动幅度过于剧烈(在 <script type="math/tex">\Delta t</script> 时间内运动到 <script type="math/tex">\sqrt{\Delta t}</script> 的位置，则速度趋于无穷)，导致黎曼和的值即便在分割区间趋于零时依然和选点有关的，可以验证的是：
+<script type="math/tex; mode=display">
+\lim_{n\rightarrow \infty}E\left[\left(I_n(\omega)-\frac{B(\omega,t)^2}{2}+\frac{t}{2}\right)^2\right]=0
+</script>
+说明黎曼和的极限趋于 <script type="math/tex">B(\omega,t)^2/2-t/2</script>，对比微积分的 <script type="math/tex">\int_0^tF(s)dF(s)=F(t)^2/2</script>，可以发现随机积分和传统积分的不同。</p>
+</details>
+<p>通过上述例子，我们发现分割区间的不同选点会导致黎曼和的极限趋于不同的值，那我们能否人为选择某个点，赋予随机微分方程涨落部分的含义呢？以及手动赋予和宏观结果直接的差距是什么呢？由此，我们引入最终节——伊藤积分。</p>
+<h2 id="7-itos-formula">7. Ito's Formula</h2>
+<p>发</p>
 
 
 
