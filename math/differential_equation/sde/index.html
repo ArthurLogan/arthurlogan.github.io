@@ -598,7 +598,70 @@ J_n(\omega)-I_n(\omega)=\sum_{i=1}^n(\Delta B_i)^2\rightarrow t
 </details>
 <p>通过上述例子，我们发现分割区间的不同选点会导致黎曼和的极限趋于不同的值，那我们能否人为选择某个点，赋予随机微分方程涨落部分的含义呢？以及手动赋予和宏观结果直接的差距是什么呢？由此，我们引入最终节——伊藤积分。</p>
 <h2 id="7-itos-formula">7. Ito's Formula</h2>
-<p>发</p>
+<p>让我们重新回看积分过程，我们知道 <script type="math/tex">df(x)=f'(x)dx</script>，这个式子是通过泰勒展开得到的：
+<script type="math/tex; mode=display">
+f(x+\Delta x)=f(x)+f'(x)\Delta x+\frac{1}{2}f''(x)(\Delta x)^2+...\tag{7.1}
+</script>
+当间隔区间的长度趋于零时，除了前两项其余都是 <script type="math/tex">\Delta x</script> 的高阶项，因此在积分过程中不会有贡献，从而有 <script type="math/tex">df=f'(x)dx</script>。在随机微分方程的例子中，我们不妨取 <script type="math/tex">f(x)=e^x, x=B(t)</script>，通过泰勒展开可以得到：
+<script type="math/tex; mode=display">
+f(B_t+\Delta B_t)=f(B_t)+f'(B_t)\Delta B_t+\frac{1}{2}f''(B_t)(\Delta B_t)^2+...\tag{7.2}
+</script>
+但当我们令时间间隔 <script type="math/tex">\Delta t</script> 趋于零时，由于上述的二次变差不为零，因此 <script type="math/tex">(\Delta B_t)^2\rightarrow \Delta t</script>，也就是 (7.2) 式右侧的第三项和时间间隔是同阶的，在积分中不能忽略，其余项仍为高阶。因此在积分中有如下式子成立：
+<script type="math/tex; mode=display">
+df(B_t)=f'(B_t)dB_t+\frac{1}{2}f''(B_t)dt\tag{7.3}
+</script>
+对应的积分形式为：
+<script type="math/tex; mode=display">
+f(B(t))=f(B(0))+\int_0^tf'(B(s))dB(s)+\frac{1}{2}\int_0^tf''(B(s))ds\tag{7.4}
+</script>
+我们进一步扩展函数 <script type="math/tex">f</script> 的形式为 <script type="math/tex">f(t, B(t))</script>，此时函数是当前时刻和当前位置的函数，则上述 (7.3), (7.4) 的微分扩展为：
+<script type="math/tex; mode=display">
+df(t,B(t))=\frac{\partial f}{\partial t}dt+\frac{\partial f}{\partial x}dB(t)+\frac{1}{2}\frac{\partial^2 f}{\partial x^2}dt\tag{7.5}
+</script>
+这个公式称为 <strong>Ito Lemma</strong>，让我们重新代入回随机微分方程的视角，其中 <script type="math/tex">X(s)</script> 是宏观坐标，而 <script type="math/tex">Y(s,X(s))</script> 是对宏观坐标进行的操作，则考虑对 <script type="math/tex">Y</script> 的微分。首先根据微观过程：<script type="math/tex">dX(s)=f(X(s))ds+\sigma(X(s))dB(s)</script>，则代入伊藤引理：
+<script type="math/tex; mode=display">
+dY(s,X(s))=\frac{\partial Y}{\partial s}ds+\frac{\partial Y}{\partial x}dX(s)+\frac{1}{2}\frac{\partial^2 Y}{\partial x^2}(dX(s))^2\tag{7.6}
+</script>
+再将微观过程的等式代入，注意到 <script type="math/tex">(dB(s))^2, ds\cdot dB(s), (ds)^2</script> 分别等价于：
+<script type="math/tex; mode=display">
+(dB(s))^2=ds, ds\cdot dB(s)=0, (ds)^2=0\tag{7.7}
+</script>
+则最终结果为：
+<script type="math/tex; mode=display">
+dY(s,X(s))=\frac{\partial Y}{\partial x}dX(s)+\left(\frac{\partial Y}{\partial s}+\frac{1}{2}\frac{\partial^2 Y}{\partial x^2}\sigma(X(s))^2\right)ds\tag{7.8}
+</script>
+最后让我们来看两个例子，更加熟悉伊藤积分。</p>
+<details class="example" open="open">
+<summary>Example</summary>
+<p>让我们用伊藤引理重新来考虑二次变差的例子，即计算下式的积分值：
+<script type="math/tex; mode=display">
+\int_0^tB(s)dB(s)
+</script>
+令 <script type="math/tex">Y(s)=(B(s))^2</script>，则对应微分为 <script type="math/tex">dY(s)=2B(s)dB(s)+ds</script>，则变换到积分形式为：
+<script type="math/tex; mode=display">
+\int_0^tB(s)dB(s)=\frac{1}{2}B(t)^2-\frac{1}{2}t
+</script>
+和原例子中 <script type="math/tex">I_n(\omega)</script> 的计算结果相同，也就说明了伊藤积分其实就是黎曼和中强行取左端点的值。</p>
+</details>
+<details class="example" open="open">
+<summary>Example</summary>
+<p>让我们用伊藤积分求解下面的随机微分方程：
+<script type="math/tex; mode=display">
+dX(s)=\beta X(s)ds+\sigma X(s)dB(s)
+</script>
+令 <script type="math/tex">Y(s)=\log X(s)</script>，代入到伊藤引理中得到：
+<script type="math/tex; mode=display">
+\begin{align*}
+dY(s)&=\frac{1}{X(s)}dX(s)-\frac{1}{2}\frac{1}{X(s)^2}(dX(s))^2\\
+&=\beta ds+\sigma dB(s)-\frac{1}{2}\sigma^2ds
+\end{align*}
+</script>
+两侧积分可得：<script type="math/tex">Y(t)=Y(0)+(\beta-\sigma^2/2)t+\sigma B(t)</script>，从而替换回原始 <script type="math/tex">X(t)</script> 即得：
+<script type="math/tex; mode=display">
+X(s)=X(0)\exp \left\{\left(\beta-\frac{\sigma^2}{2}\right)t+\sigma B(t)\right\}
+</script>
+</p>
+</details>
 
 
 
