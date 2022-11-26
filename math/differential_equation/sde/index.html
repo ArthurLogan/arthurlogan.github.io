@@ -343,8 +343,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#8-extension" class="md-nav__link">
-    8 Extension
+  <a href="#8-exercise" class="md-nav__link">
+    8 Exercise
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-extension" class="md-nav__link">
+    9 Extension
   </a>
   
 </li>
@@ -641,7 +648,7 @@ dY(s,X(s))=\frac{\partial Y}{\partial s}ds+\frac{\partial Y}{\partial x}dX(s)+\f
 <script type="math/tex; mode=display">
 dY(s,X(s))=\frac{\partial Y}{\partial x}dX(s)+\left(\frac{\partial Y}{\partial s}+\frac{1}{2}\frac{\partial^2 Y}{\partial x^2}\sigma(X(s))^2\right)ds\tag{7.8}
 </script>
-最后让我们来看两个例子，更加熟悉伊藤积分。</p>
+最后让我们来看几个例子，更加熟悉伊藤积分。</p>
 <details class="example" open="open">
 <summary>Example</summary>
 <p>让我们用伊藤引理重新来考虑二次变差的例子，即计算下式的积分值：
@@ -673,7 +680,57 @@ X(s)=X(0)\exp \left\{\left(\beta-\frac{\sigma^2}{2}\right)t+\sigma B(t)\right\}
 </script>
 </p>
 </details>
-<h2 id="8-extension">8 Extension</h2>
+<h2 id="8-exercise">8 Exercise</h2>
+<p>本节使用伊藤积分求解两个经典的随机微分方程，<strong>Geometric Brownian Motion</strong> 和 <strong>Ornstein-Unlenbeck Process</strong>。</p>
+<details class="example" open="open">
+<summary><strong>Geometric Brownian Motion</strong></summary>
+<p>微分方程的形式为
+<script type="math/tex; mode=display">
+dX_t=\mu_tX_tdt+\sigma_tX_tdB_t
+</script>
+通过构造方法求解，很容易联想到构造对数函数，即 <script type="math/tex">Y_t=\ln X_t</script>，通过伊藤引理可知微分为：</p>
+<p>
+<script type="math/tex; mode=display">
+dY_t=\left(\mu_t-\frac{1}{2}\sigma_t^2\right)dt+\sigma_tdB_t
+</script>
+</p>
+<p>则两侧积分可知 <script type="math/tex">Y_t=\ln X_0+(\mu_t-\sigma_t^2/2)t+\sigma_tB_t</script>，替换回 <script type="math/tex">X_t</script> 即：
+<script type="math/tex; mode=display">
+X(t)=X(0)\exp\left\{\left(\mu_t-\frac{1}{2}\sigma_t^2\right)t+\sigma_t B(t)\right\}
+</script>
+</p>
+</details>
+<details class="example" open="open">
+<summary><strong>Ornstein-Unlenbeck Process</strong></summary>
+<p>微分方程的形式为：
+<script type="math/tex; mode=display">
+dX(s)=\alpha(\mu-X(s))ds+\sigma dB(s)
+</script>
+通过变量代换不断化简微分方程。需要注意所有变量都是随机变量，微分过程均需要使用伊藤引理。令 <script type="math/tex">Y(s)=X(s)-\mu</script>，则微分方程变换为：
+<script type="math/tex; mode=display">
+dY(s)=-\alpha Y(s)ds+\sigma dB(s)
+</script>
+构造 <script type="math/tex">Z(s)=e^{\alpha s}Y(s)</script>，则微分方程变换为：
+<script type="math/tex; mode=display">
+dZ(s)=\alpha e^{\alpha s}Y(s)ds+e^{\alpha s}dY(s)=\sigma e^{\alpha s}dB(s)
+</script>
+同时在两侧积分并带回 <script type="math/tex">X(s)</script> 可得：
+<script type="math/tex; mode=display">
+X(t)=\mu+e^{-\alpha t}(X(0)-\mu)+\sigma \int_0^t e^{-\alpha(t-s)}dB(s)
+</script>
+考察其均值和方差(积分的均值可以转化成黎曼和理解)可得：
+<script type="math/tex; mode=display">
+E[X(t)]=e^{-\alpha t}(X(0)-\mu)+\mu
+</script>
+</p>
+<p>
+<script type="math/tex; mode=display">
+\text{Var}[X(t)]=E\left[\left(\sigma\int_0^t e^{-\alpha(t-s)}dB(s)\right)^2\right]=\sigma^2E\left[\int_0^te^{-2\alpha(t-s)}ds\right]=\frac{\sigma^2}{2\alpha}(1-e^{-\alpha t})
+</script>
+</p>
+<p>随着时间增长，最终会趋向和初始位置无关的点。</p>
+</details>
+<h2 id="9-extension">9 Extension</h2>
 <p>伊藤积分在黎曼和的计算中选取了分割区间的左端点近似区间上的值，推导得到了很好的性质，但当然也可以选择其他的点，如Stratonovich积分选取的是分割区间的中点，从而能保留古典微积分的形式，而不需要伊藤校正项。在应用数学中伊藤积分仍然是主流。</p>
 
 
