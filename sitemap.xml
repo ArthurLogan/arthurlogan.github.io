@@ -26,6 +26,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://example.com/math/differential_equation/kolmogorov/</loc>
+         <lastmod>2022-11-26</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://example.com/math/differential_equation/ode/</loc>
          <lastmod>2022-11-26</lastmod>
          <changefreq>daily</changefreq>
