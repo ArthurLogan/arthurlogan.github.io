@@ -474,19 +474,23 @@ Y(t+h)-Y(t)&=\exp\{B(t+h)\}-\exp\{B(t)\}\\&\approx Y(t)(\sqrt{h}Z+hZ^2/2)
 </script>
 因此可得：
 <script type="math/tex; mode=display">
-E[Y(t+h)-Y(t)|Y(t)]\approx \frac{Y(t)}{2}h, \text{Var}[Y(t+h)-Y(t)|Y(t)]\approx Y(t)^2h\tag{5.2}
+E[Y(t+h)-Y(t)|Y(t)]\approx \frac{Y(t)}{2}h\tag{5.2}
 </script>
-此时变换结果就和此前随机微分方程的解不同了，其条件方差的结果和当前的位置有关系了，此时微观过程近似可以表示为：
 <script type="math/tex; mode=display">
-dY(s)=\frac{Y(s)}{2}ds+Y(s)dB(s)\tag{5.3}
+\text{Var}[Y(t+h)-Y(t)|Y(t)]\approx Y(t)^2h\tag{5.3}
+</script>
+</p>
+<p>此时变换结果就和此前随机微分方程的解不同了，其条件方差的结果和当前的位置有关系了，此时微观过程近似可以表示为：
+<script type="math/tex; mode=display">
+dY(s)=\frac{Y(s)}{2}ds+Y(s)dB(s)\tag{5.4}
 </script>
 对微观过程积分可以得到：
 <script type="math/tex; mode=display">
-Y(t)=y_0+\int_0^t\frac{Y(s)}{2}ds+\int_0^tY(s)dB(s)\tag{5.4}
+Y(t)=y_0+\int_0^t\frac{Y(s)}{2}ds+\int_0^tY(s)dB(s)\tag{5.5}
 </script>
 上面的例子提供了两个启示：其一是为了继续对随机微分方程的建模，我们必须要研究对布朗运动的积分；其二是促使我们构建更鲁棒的模型，能够兼容上面的不同的变换，我们构建如下微观过程：
 <script type="math/tex; mode=display">
-X(t)=x_0+\int_0^tf(X(s))ds+\int_0^t\sigma(X(s))dB(s)\tag{5.5}
+X(t)=x_0+\int_0^tf(X(s))ds+\int_0^t\sigma(X(s))dB(s)\tag{5.6}
 </script>
 这个微分方程说明了在不同时刻涨落的幅度不再是恒定的值，而是和当前位置相关的，若涨落的方差为定值，则退化为 (1.1) 的形式。</p>
 <h2 id="6-integration-bounded-variation">6. Integration &amp; Bounded Variation</h2>
