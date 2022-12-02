@@ -287,6 +287,20 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#law-of-large-numbers" class="md-nav__link">
+    Law of Large Numbers
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#central-limit-theorem" class="md-nav__link">
+    Central Limit Theorem
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -324,8 +338,23 @@
   
   
     <li class="md-nav__item">
-      <a href="../../score_based_model/" class="md-nav__link">
+      <a href="../../scores/score_based_model/" class="md-nav__link">
         Scores
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dpm/" class="md-nav__link">
+        DPM
       </a>
     </li>
   
@@ -371,6 +400,20 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#law-of-large-numbers" class="md-nav__link">
+    Law of Large Numbers
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#central-limit-theorem" class="md-nav__link">
+    Central Limit Theorem
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -393,21 +436,81 @@
 <script type="math/tex; mode=display">
 \text{Pr}(|X|\ge a)\le \frac{\mathbb{E}(|X|)}{a}
 </script>
-证明：不妨假设 <script type="math/tex">X</script> 取值非负，则根据积分的定义有：
+</p>
+<details class="note">
+<summary><strong>Prove</strong></summary>
+<p>证明：不妨假设 <script type="math/tex">X</script> 取值非负，则根据积分的定义有：
 <script type="math/tex; mode=display">
 \mathbb{E}(X)=\int_0^\infty xf(x)dx\ge\int_a^\infty xf(x)dx\ge a\int_a^\infty f(x)dx=a\text{Pr}(X\ge a)
 </script>
 </p>
+</details>
 <h2 id="chebyshevs-inequality">Chebyshev's Inequality</h2>
 <p>设 <script type="math/tex">X</script> 是随机变量，均值为 <script type="math/tex">\mu</script>，方差为 <script type="math/tex">\sigma^2</script>，则对于任何正实数 <script type="math/tex">k</script>，以下不等式成立：
 <script type="math/tex; mode=display">
 \text{Pr}(|X-\mu|\ge k\sigma)\le \frac{1}{k^2}
 </script>
-证明：令 <script type="math/tex">Y=X-\mu, a=(k\sigma)^2</script>，则根据切比雪夫不等式有：
+</p>
+<details class="note">
+<summary><strong>Prove</strong></summary>
+<p>证明：令 <script type="math/tex">Y=X-\mu, a=(k\sigma)^2</script>，则根据切比雪夫不等式有：</p>
+</details>
+<p>
 <script type="math/tex; mode=display">
-\text{Pr}(|X-\mu|\ge k\sigma)=\text{Pr}((X-\mu)^2\ge k^2\sigma^2)\le \frac{\mathbb{E}[(X-\mu)^2]}{k^2\sigma^2}=\frac{1}{k^2}
+    \text{Pr}(|X-\mu|\ge k\sigma)=\text{Pr}((X-\mu)^2\ge k^2\sigma^2)\le \frac{\mathbb{E}[(X-\mu)^2]}{k^2\sigma^2}=\frac{1}{k^2}
 </script>
 </p>
+<h2 id="law-of-large-numbers">Law of Large Numbers</h2>
+<p>Weak Law：弱大数定理，对于独立同分布的期望存在的随机变量 <script type="math/tex">X_i</script>，则其采样的均值服从下式：
+<script type="math/tex; mode=display">
+\lim_{n\rightarrow\infty}\text{Pr}\left(|\bar{X}_n-\mu|\le\varepsilon\right)=1
+</script>
+</p>
+<details class="note">
+<summary><strong>Prove</strong></summary>
+<p>证明：仅考虑随机变量有限情况，则有采样均值的统计信息为：</p>
+</details>
+<p>
+<script type="math/tex; mode=display">
+    E(\bar{X}_n)=\mu, \text{Var}(\bar{X}_n)=\frac{\sigma^2}{n}
+</script>
+​    根据切比雪夫不等式有：
+<script type="math/tex; mode=display">
+    \text{Pr}(\left|\bar{X}_n-\mu\right|\ge\varepsilon)\le \frac{\sigma^2}{n\varepsilon^2}
+</script>
+​    令 <script type="math/tex">n</script> 趋于无穷时，即得弱大数定理形式。</p>
+<p>Strong Law：强大数定理，对于独立同分布的期望存在的随机变量 <script type="math/tex">X_i</script>，则其采样均值以概率1等于均值，即：
+<script type="math/tex; mode=display">
+\text{Pr}\left(\lim_{n\rightarrow\infty}\bar{X}_n=\mu\right)=1
+</script>
+</p>
+<h2 id="central-limit-theorem">Central Limit Theorem</h2>
+<p>传统形式：设 <script type="math/tex">X_i</script> 是独立同分布的随机变量，具有期望 <script type="math/tex">\mu</script> 和有限方差 <script type="math/tex">\sigma^2</script>，则 <script type="math/tex">\sqrt{n}(\bar{X}_n-\mu)</script> 的分布趋于标准正态分布，即：
+<script type="math/tex; mode=display">
+\sqrt{n}(\bar{X}_n-\mu)\sim N(0,1)
+</script>
+</p>
+<details class="note">
+<summary><strong>Prove</strong></summary>
+<p>证明：通过特征函数证明，构造如下随机变量：</p>
+</details>
+<p>
+<script type="math/tex; mode=display">
+    Z_n=\frac{X_1+...+x_n-n\mu}{\sqrt{n\sigma^2}}=\sum_{i=1}^n\frac{X_i-\mu}{\sqrt{n\sigma^2}}=\sum_{i=1}^n\frac{1}{\sqrt{n}}Y_i
+</script>
+​    则特征函数可以表示为：
+<script type="math/tex; mode=display">
+    \varphi_{Z_n}(t)=\varphi_{\sum_{i=1}^n\frac{1}{\sqrt{n}}Y_i}(t)=\left[\varphi_{Y_1}\left(\frac{t}{\sqrt{n}}\right)\right]^n
+</script>
+​    根据指数函数的泰勒展开，可以特征函数近似于：
+<script type="math/tex; mode=display">
+    \varphi_{Y_1}\left(\frac{t}{\sqrt{n}}\right)=\mathbb{E}\left[1+\frac{itY_1}{\sqrt{n}}-\frac{t^2Y_1^2}{2n}+o\left(\frac{t^2}{n}\right)\right]=1-\frac{t^2}{2n}+o\left(\frac{t^2}{n}\right)
+</script>
+​    则根据等式 <script type="math/tex">e^x=\lim_{n\rightarrow\infty}(1+\frac{x}{n}^n)</script>，<script type="math/tex">Z_n</script> 的特征函数为：
+<script type="math/tex; mode=display">
+    \varphi_{Z_n}(t)=\left(1-\frac{t^2}{2n}+o\left(\frac{t^2}{n}\right)\right)^n\rightarrow e^{-\frac{t^2}{2}}, \ \ n\rightarrow\infty
+</script>
+​    而右侧结果恰好是标准正态分布的特征函数，根据反演定理，概率分布和特征函数一一对应，则采样均值的变换的分布随着采样数量的增加趋于标准正态分布。</p>
 
 
 
