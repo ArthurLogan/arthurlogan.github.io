@@ -401,6 +401,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#radiometry" class="md-nav__link">
+    Radiometry
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -469,6 +476,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#radiometry" class="md-nav__link">
+    Radiometry
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -500,6 +514,7 @@
 <p>从人眼发出“感知”光线和场景求交，计算在弹射过程中，每个交点上光线的颜色，递归叠加，得到像素的颜色。在这个过程中需要定义很多问题，我们依次介绍这些方法。</p>
 <ul>
 <li>光线求交，求交加速</li>
+<li>光线弹射，辐射度量学</li>
 </ul>
 <h3 id="intersection">Intersection</h3>
 <p>光线：光源位置 <script type="math/tex">\vec{o}</script> 和光线方向 <script type="math/tex">\vec{d}</script>，则光线可以表示为 <script type="math/tex">r=o+td, t\ge 0</script>。</p>
@@ -568,6 +583,36 @@ t_{\text{enter}}=\max{t_{\min}}, t_{\text{exit}}=\min{t_{\text{max}}}
 </script>
 因而光线和包围盒相交当且仅当 <script type="math/tex">t_{\text{enter}}<t_{\text{exit}}, t_{\text{exit}}\ge 0</script>。用和坐标轴平行平面的原因是，在计算平面相交时，得到只需要考虑一维上的相交即可。</p>
 </details>
+<details class="note">
+<summary>Uniform Spatial Partitions</summary>
+<p>将场景切分成均匀的网格，每个网格记录表面和网格相交的物体。在”感知“光线发出后，逐个和网格求交，如果相交网格中包含物体，则与物体求交，否则得到下一个相交网格。</p>
+</details>
+<details class="note">
+<summary>Spatial Partitions</summary>
+<p>使用不同的空间划分结构，将物体进行划分，如八叉树、KD树、BSP树等。</p>
+<p>对于KD树，每次选择一个轴进行切分，所有物体都只存储在叶子节点中，根据和网格相交决定是否向子节点搜索或和物体求交。但对于KD树的问题，很难判断三角形是否和网格相交，以及同一个物体可能和很多个网格相交。</p>
+</details>
+<details class="note">
+<summary>Bounding Volume Hierarchy</summary>
+<p>将物体进行划分，每次划分后重新计算当前物体组的包围盒，每一个物体只会包含于一个包围盒内，根据包围盒的划分组成树状结构，并将物体存储在叶子节点，不同的叶子节点可能会产生相交。</p>
+<p>如何划分节点，一些启发点：</p>
+<ol>
+<li>选择最长的轴进行划分。</li>
+<li>取中间的物体进行划分，中位数，O(n)求第K大。</li>
+<li>终止条件，比如叶子节点三角形数小于5。</li>
+</ol>
+<p>根据树状结构求交即可，和当前节点相交，则和所有子节点判断是否相交，再递归判断。</p>
+</details>
+<h3 id="radiometry">Radiometry</h3>
+<p>光照的描述和度量，从物理上定义了光照的属性：Radiant Energy，Radiant flux，intensity，irradiance，radiance。</p>
+<p><strong>Radiant Energy</strong>：电磁辐射的能量。</p>
+<p><strong>Radiant Flux(Power)</strong>：电磁辐射通量、辐射功率，表示单位时间辐射的能量。</p>
+<p><strong>Radiant Intensity</strong>：不同方向上的辐射通量，即单位时间、单位立体角的辐射能量。立体角是面积和半径平方的比值。
+<script type="math/tex; mode=display">
+d\omega=\frac{dA}{r^2}=\frac{(rd\theta)(r\sin\theta d\phi)}{r^2}=\sin\theta d\theta d\phi,\ \ I=\frac{\Phi}{4\pi}
+</script>
+<strong>Irradiance</strong>：</p>
+<p><strong>Radiance</strong>：</p>
 
 
 
