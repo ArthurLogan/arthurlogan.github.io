@@ -384,12 +384,25 @@
     Whitted-Style RT
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
+    <nav class="md-nav" aria-label="Whitted-Style RT">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#intersection" class="md-nav__link">
     Intersection
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#acceleration" class="md-nav__link">
+    Acceleration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -439,12 +452,25 @@
     Whitted-Style RT
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
+    <nav class="md-nav" aria-label="Whitted-Style RT">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#intersection" class="md-nav__link">
     Intersection
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#acceleration" class="md-nav__link">
+    Acceleration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -473,9 +499,9 @@
 <h2 id="whitted-style-rt">Whitted-Style RT</h2>
 <p>从人眼发出“感知”光线和场景求交，计算在弹射过程中，每个交点上光线的颜色，递归叠加，得到像素的颜色。在这个过程中需要定义很多问题，我们依次介绍这些方法。</p>
 <ul>
-<li>光线求交</li>
+<li>光线求交，求交加速</li>
 </ul>
-<h2 id="intersection">Intersection</h2>
+<h3 id="intersection">Intersection</h3>
 <p>光线：光源位置 <script type="math/tex">\vec{o}</script> 和光线方向 <script type="math/tex">\vec{d}</script>，则光线可以表示为 <script type="math/tex">r=o+td, t\ge 0</script>。</p>
 <details class="note">
 <summary>Sphere</summary>
@@ -491,12 +517,57 @@
 <script type="math/tex; mode=display">
 f(\vec{o}+t\vec{d})=0
 </script>
-同样需要保证结果的 <script type="math/tex">t</script> 为正实数。</p>
+可以通过数学/数值方法求解，同样需要保证结果的 <script type="math/tex">t</script> 为正实数。</p>
+</details>
+<details class="note">
+<summary>Plane</summary>
+<p>平面可以表示为 <script type="math/tex">(\text{p}-\text{p}')\cdot \text{N}=0</script>，则代入光线公式得交点为：
+<script type="math/tex; mode=display">
+t=\frac{(\text{p}'-\text{o})\cdot \text{N}}{\text{d}\cdot \text{N}}
+</script>
+</p>
 </details>
 <details class="note">
 <summary>Triangle Mesh</summary>
+<p>遍历 Mesh 所有三角形得到最近的交点，将问题转换为光线和三角形求交。根据重心坐标插值，得到 Moller-Trumbore 公式。
+<script type="math/tex; mode=display">
+\vec{O}+t\vec{D}=(1-b_1-b_2)P_0+b_1P_1+b_2P_2
+</script>
+</p>
+<p>
+<script type="math/tex; mode=display">
+\begin{bmatrix}t\\b_1\\b_2\end{bmatrix}=\frac{1}{S_1\cdot E_1}\begin{bmatrix}S_2\cdot E_2\\ S_1\cdot S\\ S_2\cdot D\end{bmatrix}
+</script>
+其中<script type="math/tex">E_1=P_1-P_0, E_2=P_2-P_0, S=O-P_0, S_1=D\times E_2, S_2=S\times E_1</script>。</p>
+<p>证明：根据混合积的定义有
+<script type="math/tex; mode=display">
+\begin{vmatrix}a_1& b_1 & c_1\\ a_2 & b_2 & c_2\\ a_3 & b_3 & c_3\end{vmatrix}=a\cdot (b\times c)
+</script>
+根据克莱姆法则，对于线性方程组 <script type="math/tex">Ax=c</script>，若矩阵 <script type="math/tex">A</script> 可逆，则解可以表示为
+<script type="math/tex; mode=display">
+x_i=\frac{\text{det}A_i}{\text{det}A}
+</script>
+其中 <script type="math/tex">A_i</script> 为将右侧向量 <script type="math/tex">c</script> 替换矩阵的对应列。将上述光线相交的公式整理得。
+<script type="math/tex; mode=display">
+\begin{bmatrix}-D&E_1&E_2\end{bmatrix}\begin{bmatrix}t\\b_1\\b_2\end{bmatrix}=S
+</script>
+则根据克莱姆法则，代入混合积结果即得上式。</p>
 </details>
-<p>遍历所有三角形得到最近的交点。</p>
+<h3 id="acceleration">Acceleration</h3>
+<p>简单的光线求交复杂度为 <script type="math/tex">\text{#pixel}\times \text{#objects}\times \text{#bounces}</script>，显得非常慢。</p>
+<details class="note">
+<summary>AABB</summary>
+<p>即 Axis-Aligned Bounding Box，轴对齐包围盒。对于三个平行平面形成的包围盒，直观理解：</p>
+<ol>
+<li>光线进入包围盒当且仅当光线进入所有平行平面之间</li>
+<li>光线离开包围盒当且仅当光线离开某一个平行平面</li>
+</ol>
+<p>因此对所有平行平面计算参数 <script type="math/tex">t_{\text{min}}, t_{\text{max}}</script>，则光线进入和离开的时间为：
+<script type="math/tex; mode=display">
+t_{\text{enter}}=\max{t_{\min}}, t_{\text{exit}}=\min{t_{\text{max}}}
+</script>
+因而光线和包围盒相交当且仅当 <script type="math/tex">t_{\text{enter}}<t_{\text{exit}}, t_{\text{exit}}\ge 0</script>。用和坐标轴平行平面的原因是，在计算平面相交时，得到只需要考虑一维上的相交即可。</p>
+</details>
 
 
 
