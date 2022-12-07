@@ -674,11 +674,16 @@ L=(I-K)^{-1}E=E+KE+K^2E+K^3E+...
 </details>
 <h2 id="path-tracing">Path Tracing</h2>
 <p>在Whitted-Style RT中，光线弹射会终止于漫反射表面，从而产生误差。路径追踪就是通过渲染方程求解正确的效果，其中包括求解积分和递归求解。</p>
+<details class="note" open="open">
+<summary>Monte Carlo Integration</summary>
 <p><strong>Monte Carlo Integration</strong>：通过采样方法求解积分值，并且可以采用不同的pdf生成样本。
 <script type="math/tex; mode=display">
 \int_a^bf(x)dx\approx \frac{1}{N}\sum_{k=1}^N\frac{f(X_k)}{p(X_k)}, X_k\sim p(x)
 </script>
 最简单的方法就是均匀采样，此时pdf为 <script type="math/tex">1/2\pi</script>。</p>
+</details>
+<details class="note" open="open">
+<summary>Recursive Solving</summary>
 <p><strong>递归求解</strong>：在不考虑物体表面发光的情况，只考虑直接光照的部分，通过蒙特卡洛积分方法。
 <script type="math/tex; mode=display">
 \begin{align*}
@@ -712,6 +717,7 @@ L_0(x,\omega)&=\int_{\Omega^+}L_i(x,\omega_i)f_r(x,\omega_i,\omega_o)\cos\theta 
 </script>
 </p>
 <p>将反射光分解为直接光源和间接光源的共同结果，前者转化为光源采样，后者进行递归求解。在光源采样时，需要判断从相交点到光源是否会被其他物体遮挡，不会则可以进行积分转化。</p>
+</details>
 
 
 
