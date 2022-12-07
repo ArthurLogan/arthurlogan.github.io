@@ -674,6 +674,44 @@ L=(I-K)^{-1}E=E+KE+K^2E+K^3E+...
 </details>
 <h2 id="path-tracing">Path Tracing</h2>
 <p>在Whitted-Style RT中，光线弹射会终止于漫反射表面，从而产生误差。路径追踪就是通过渲染方程求解正确的效果，其中包括求解积分和递归求解。</p>
+<p><strong>Monte Carlo Integration</strong>：通过采样方法求解积分值，并且可以采用不同的pdf生成样本。
+<script type="math/tex; mode=display">
+\int_a^bf(x)dx\approx \frac{1}{N}\sum_{k=1}^N\frac{f(X_k)}{p(X_k)}, X_k\sim p(x)
+</script>
+最简单的方法就是均匀采样，此时pdf为 <script type="math/tex">1/2\pi</script>。</p>
+<p><strong>递归求解</strong>：在不考虑物体表面发光的情况，只考虑直接光照的部分，通过蒙特卡洛积分方法。
+<script type="math/tex; mode=display">
+\begin{align*}
+L_0(p,\omega_0)&=\int_{\Omega^+}L_i(p,\omega_i)f_r(p,\omega_i,\omega_o)(n\cdot \omega_i)d\omega_i\\&\approx\frac{1}{N}\sum_{i=1}^N\frac{L_i(p,\omega_i)f_r(p,\omega_i,\omega_o)(n\cdot \omega_i)}{p(\omega_i)}
+\end{align*}
+</script>
+只考虑直接光照时，从相机发出的“感知”光线和场景求交，需要计算相交点朝向相机发出的 Radiance，即 BRDF 和局部接受的 Radiance 的积分，通过蒙特卡洛方法进行数值求解。如果采样方向没有光源，则无贡献，否则累加上述一项，其中：</p>
+<ol>
+<li>光源的 Radiance</li>
+<li>物体表面的 BRDF</li>
+<li>入射光线和法向量</li>
+<li>采样的 pdf</li>
+</ol>
+<p>均已知，则可以计算出上述采样值。进一步考虑间接光照，若 P 点采样得到的“感知”光线和场景相交于 Q 点，则 Q 点反射的光也会对 P 点朝向相机的 Radiance 产生贡献，该贡献值等价于相机从 P 点观察 Q 点，Q 点的直接光照朝向 P 点的 Radiance。</p>
+<p>自此，路径追踪算法基本完成，但仍存在几个需要理清的问题。</p>
+<ol>
+<li>维数爆炸，取 <script type="math/tex">N=1</script>，在同一个像素进行多次采样（高spp）。</li>
+<li>终止条件，俄罗斯轮盘赌，期望上正确。</li>
+<li>效率太低，光源采样，将交点半球面的积分转换为在光源立体角上的积分。</li>
+</ol>
+<p>
+<script type="math/tex; mode=display">
+d\omega=\frac{dA\cos\theta'}{||x'-x||^2}
+</script>
+</p>
+<p>
+<script type="math/tex; mode=display">
+\begin{align*}
+L_0(x,\omega)&=\int_{\Omega^+}L_i(x,\omega_i)f_r(x,\omega_i,\omega_o)\cos\theta d\omega_i\\&=\int_AL_i(x,\omega_i)f_r(x,\omega_i,\omega_o)\frac{\cos\theta\cos\theta'}{||x'-x||^2}dA
+\end{align*}
+</script>
+</p>
+<p>将反射光分解为直接光源和间接光源的共同结果，前者转化为光源采样，后者进行递归求解。在光源采样时，需要判断从相交点到光源是否会被其他物体遮挡，不会则可以进行积分转化。</p>
 
 
 
